@@ -3,14 +3,33 @@
     <title>Air Hockey</title>
     <style>
         #canvas {
-            border: 2px solid black;
+            border-top:2px solid white;
             background-color: black;
             cursor:none; 
+        }
+        h2 {
+            font-family: Arial;
+            color: white;
+            padding-top:20px;
+            padding-left: 10px;    
+        }
+        #mainDiv {
+            background-color: black;
+            width: 600px;
+        }
+        a {
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="600" height="400"></canvas>
+    <div id="mainDiv">
+        <a href="menu.html">
+            <h2>Back</h2>
+        </a>
+        <canvas id="canvas" width="600" height="400">
+        </canvas>
+    </div>
     <script src="main.js"></script>
 </body>
 </html>
