@@ -1,16 +1,18 @@
+/* the main game script */
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
 //image varibles
 var cortLines = new Image()
 cortLines.src = "hockeyLine.png"
 
-//sound varibles
+/* sound varibles */
 var puckSound = new Audio("puckHit.wav")
 var yaySound = new Audio("yay.wav")
 var booSound = new Audio("boo.wav")
-//enemy shooting var
+/* enemy shooting var */
 var readyToShoot = false
 
+/* add the event listener for the mouse movment */
 ctx.canvas.addEventListener('mousemove', function(event) {
     var mouseX = event.clientX - ctx.canvas.offsetLeft
     var mouseY = event.clientY - ctx.canvas.offsetTop
@@ -33,12 +35,14 @@ function goal(x,y) {
 var playerGoal = new goal(590,canvas.height / 2 - 25)
 var enemyGoal = new goal(0,canvas.height / 2 - 25)
 
+/* draw the center line */
 function drawLines() {
     ctx.beginPath()
     ctx.drawImage(cortLines,10, 0)
     ctx.closePath()
 }
 
+/* draw the goals */
 function drawGoals() {
     ctx.beginPath()
     ctx.rect(playerGoal.x,playerGoal.y,goalWidth,goalHeight)
@@ -47,22 +51,46 @@ function drawGoals() {
     ctx.fill()
     ctx.closePath()
 }
+
+/* set the local storage money so the user can buy players*/
+function setMony() {
+    var mony = localStorage.getItem("mony")
+    if(mony == null) {
+      localStorage.setItem("mony", "0")
+    }
+    //ocalStorage.setItem("mony", mony.parseInt() + 1)
+    console.log("mony is " + mony)
+    localStorage.setItem("mony", parseInt(mony) + 1)
+}
+
+/* the score object */
 var score = {
     playerScore: 0,
     enemyScore: 0,
     draw: function() {
-        ctx.font="20px Arial";
-        ctx.fillText(this.enemyScore,275,20);
+        ctx.font="20px Arial"
+        ctx.fillText(this.enemyScore,275,20)
         ctx.fillText(this.playerScore,325,20)
     },
     win: function() {
         if(this.playerScore == 10) {
+            ctx.beginPath()
+            ctx.font="100px Arial"
+            ctx.fillStyle = "red"
+            ctx.fillText("YOU WIN!!",100,100)
+            ctx.closePath()
+
+            setMony()
+            /* clear the interval */
             clearInterval(loop)
-            console.log('you won')
         }
         else if(this.enemyScore == 10) {
+            ctx.beginPath()
+            ctx.font="100px Arial"
+            ctx.fillStyle = "blue"
+            ctx.fillText("you lose",100,100)
+            ctx.closePath()
             clearInterval(loop)
-            console.log('my porly programed ai beet you')
         }
     }
 }
@@ -70,6 +98,7 @@ var score = {
 var playerScored = false
 var enemyScored = false
 
+/* the player object */
 var player = {
     x: 550,
     y: canvas.height / 2,
@@ -89,12 +118,14 @@ var player = {
         if (distance < this.size + puck.size) {
             //x moving
             if(puck.x > this.x) {
+                setMony() //needs to be deleted before deploy
                 puck.Xdirection = "right"
                 puck.speed = 500
                 puckSound.play()
                 readyToShoot = false
             }
             else if(puck.x < this.x) {
+                setMony() //needs to be deleted before deploy
                 puck.Xdirection = "left"
                 puck.speed = 500
                 puckSound.play()
@@ -102,12 +133,14 @@ var player = {
             }
             //y moving
             if(puck.y > this.y) {
+                setMony() //needs to be deleted before deploy
                 puck.Ydirection = "down"
                 puck.speed = 500
                 puckSound.play()
                 readyToShoot = false
             }
             else if(puck.y < this.y) {
+                setMony() //needs to be deleted before deploy
                 puck.Ydirection = "up"
                 puck.speed = 500
                 puckSound.play()
@@ -117,6 +150,7 @@ var player = {
     },
 }
 
+/* the enemy object */
 var enemyShoot = false
 var enemy = {
     x: 50,
@@ -136,20 +170,21 @@ var enemy = {
             if(puck.y > this.y) {
                 if(moveDecider == 1) {
                     this.y += this.speed
-                }      
+                }
             }
             else if(puck.y < this.y) {
-                if(moveDecider == 1) { 
+                if(moveDecider == 1) {
                     this.y -= this.speed
                 }
             }
-        //moving on x  
+
+        //moving on x
         if(this.x < puck.x && this.x <  canvas.width / 2) {
             this.x += this.speed
         }
-        //why is it moving on the other side 
-        else if(this.x > puck.x && this.x > 0) { //<-- why 
-            this.x -= this.speed  
+        //why is it moving on the other side
+        else if(this.x > puck.x && this.x > 0) { //<-- why
+            this.x -= this.speed
         }
         //make it slow down as it gets closer to the puck
         var dx = this.x - puck.x;
@@ -162,6 +197,7 @@ var enemy = {
            this.speed = 4
         }
     },
+
     //makes the puck collide with the enemy
     collide: function() {
         var dx = this.x - puck.x;
@@ -209,7 +245,8 @@ var enemy = {
         }
     }
 }
-//puck below
+
+/* the puck object */
 var puck = {
     x:canvas.width / 2,
     y:canvas.height /  2,
@@ -243,7 +280,7 @@ var puck = {
         }
     },
     collide: function() {
-        
+
         if(this.x + 10 >= canvas.width) {
             this.Xdirection = "left"
             puckSound.play()
@@ -268,15 +305,15 @@ var puck = {
         //colitions with player goal
         var distX = Math.abs(puck.x - playerGoal.x-10/2);
         var distY = Math.abs(puck.y - playerGoal.y-50/2);
-        
+
         var outSideOfPlayerGoal = ((distX > (10/2 + puck.size))
-                    || distY > (50/2 + puck.size)) 
-        
+                    || distY > (50/2 + puck.size))
+
         if (!outSideOfPlayerGoal) {
             enemyScored = true
             booSound.play()
-            reset()  
-        } 
+            reset()
+        }
         //enemy goal collitions
         var PdistX = Math.abs(puck.x - enemyGoal.x-10/2);
         var PdistY = Math.abs(puck.y - enemyGoal.y-50/2);
@@ -285,19 +322,18 @@ var puck = {
         if (PdistY > (50/2 + puck.size)) { return false; }
 
         if (PdistX <= (10/2)) {
-            console.log('scored')
             playerScored = true
             yaySound.play()
-            reset()  
-        } 
-        if (PdistY <= (50/2)) { 
-            console.log('scored')
+            reset()
+        }
+        if (PdistY <= (50/2)) {
             playerScored = true
             yaySound.play()
-            reset()  
+            reset()
         }
     }
 }
+
 /*this resets the players and puck after a goal
 is scored*/
 function reset() {
@@ -314,12 +350,13 @@ function reset() {
     player.y = canvas.height / 2
     //puck recets
     puck.x = canvas.width / 2
-    puck.y = canvas.height / 2 
+    puck.y = canvas.height / 2
     //enemy recets
     enemy.x = 50
     enemy.y = canvas.height / 2
 }
 
+/* this is the main draw function to draw everything */
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
     //lines
@@ -328,6 +365,7 @@ function draw() {
     drawGoals()
     //score
     score.draw()
+    score.win()
     //playerFunciton
     player.draw()
     player.collide()
@@ -341,4 +379,5 @@ function draw() {
     puck.collide()
 }
 
+/* loop the draw function */
 var loop = setInterval(draw,10)
