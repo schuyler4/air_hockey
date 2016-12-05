@@ -56,11 +56,11 @@ function drawGoals() {
 function setMony() {
     var mony = localStorage.getItem("mony")
     if(mony == null) {
-      localStorage.setItem("mony", "0")
+      localStorage.setItem("mony", "5")
+    } else {
+      console.log("mony is " + mony)
+      localStorage.setItem("mony", parseInt(mony) + 5)
     }
-    //ocalStorage.setItem("mony", mony.parseInt() + 1)
-    console.log("mony is " + mony)
-    localStorage.setItem("mony", parseInt(mony) + 1)
 }
 
 /* the score object */
@@ -79,7 +79,6 @@ var score = {
             ctx.fillStyle = "red"
             ctx.fillText("YOU WIN!!",100,100)
             ctx.closePath()
-
             setMony()
             /* clear the interval */
             clearInterval(loop)
@@ -106,7 +105,7 @@ var player = {
     draw: function() {
         ctx.beginPath()
         ctx.arc(this.x,this.y,this.size,0,2*Math.PI);
-        ctx.fillStyle = "red"
+        ctx.fillStyle = localStorage.getItem("currentColor") || "red"
         ctx.fill()
         ctx.closePath()
     },
@@ -118,14 +117,12 @@ var player = {
         if (distance < this.size + puck.size) {
             //x moving
             if(puck.x > this.x) {
-                setMony() //needs to be deleted before deploy
                 puck.Xdirection = "right"
                 puck.speed = 500
                 puckSound.play()
                 readyToShoot = false
             }
             else if(puck.x < this.x) {
-                setMony() //needs to be deleted before deploy
                 puck.Xdirection = "left"
                 puck.speed = 500
                 puckSound.play()
@@ -133,14 +130,12 @@ var player = {
             }
             //y moving
             if(puck.y > this.y) {
-                setMony() //needs to be deleted before deploy
                 puck.Ydirection = "down"
                 puck.speed = 500
                 puckSound.play()
                 readyToShoot = false
             }
             else if(puck.y < this.y) {
-                setMony() //needs to be deleted before deploy
                 puck.Ydirection = "up"
                 puck.speed = 500
                 puckSound.play()

@@ -56,6 +56,17 @@
         padding-left: 10px;
     }
 
+    #warningHeader {
+      font-family: Arial;
+      color: red;
+      padding-left: 20px;
+    }
+
+    p {
+      font-family: Arial;
+      color: white;
+    }
+
   </style>
 </head>
 <body>
@@ -63,27 +74,32 @@
     <a href="menu.html">
         <h2>Back</h2>
     </a>
-    <h2>Mony: </h2>
+    <h2 id="mony">Mony: </h2>
     <table>
       <tr>
         <td class="td">
           <div id="red">
           </div>
+          <button id="redButton">yoese</button>
+          <p>None</p>
         </td>
         <td class="td">
           <div id="green">
           </div>
           <button id="greenButton">buy</button>
+          <p>5</p>
         </td>
         <td class="td">
           <div id="blue">
           </div>
           <button id="blueButton">buy</button>
+          <p>10</p>
         </td>
         <td class="td">
           <div id="yellow">
           </div>
           <button id="yellowButton">buy</button>
+          <p>15</p>
         </td>
       </tr>
       <tr>
@@ -92,6 +108,7 @@
       <tr>
 
     </table>
+    <h3 id="warningHeader"></h3>
 
   </div>
   <script src="mony.js"></script>
